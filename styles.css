@@ -222,3 +222,49 @@ body{
 .active-clone#clone-info-wind span {
     transform: translateY(0%);
 }
+#hourly-forecast {
+    margin: 50px 0;
+    overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+
+    scrollbar-color: rgba(0, 0, 0, .5) rgba(0, 0, 0, 0);
+    scrollbar-width: thin;
+}
+#hourly-forecast::-webkit-scrollbar{
+    -webkit-appearance: none;
+}
+#hourly-forecast::-webkit-scrollbar:vertical {
+    width: 10px;
+}
+#hourly-forecast::-webkit-scrollbar-button:increment,
+#hourly-forecast::-webkit-scrollbar-button {
+    display: none;
+}
+#hourly-forecast::-webkit-scrollbar:vertical {
+    height: 10px;
+}
+#hourly-forecast::-webkit-scrollbar-thumb {
+    background-color: #797979;
+    border-radius: 20px;
+    border: 2px solid #f1f2f3;
+}
+#hourly-forecast::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+.hourly-item {
+    flex: 0 0 auto;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+    color: white;
+}
+.hourly-item img {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 5px;
+}

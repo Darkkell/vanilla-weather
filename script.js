@@ -15,13 +15,20 @@ search.addEventListener('click', () => {
 
     const getDataByCity = () => eventManager(getByCity(city,APIKey));
     getDataByCity();
+
+    const getDataByCityHourly = () => eventManager(getByCityHourly(city, APIKey));
+    getDataByCityHourly();
 });
 
 async function getByCity(city, APIKey){
     container.classList.remove('active'); // without auto clear
+    if(cityHide.textContent === city){
+        return;
+    }
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}`)
     .then(response => response.json())
     .then(json => {
+
 
         if (json.cod == '404') {
                 cityHide.textContent = city;
@@ -32,11 +39,7 @@ async function getByCity(city, APIKey){
                 return;
             }
 
-            if(cityHide.textContent === city){
-                return;
-            }
-
-            cityHide.textContent = city;
+            cityHide.textContent = city; // delete if you need search same city again
 
             container.style.height = '600px';
             container.classList.add('active');
@@ -62,7 +65,8 @@ async function getByCity(city, APIKey){
                 'Mist': 'images/mist.png',
                 'Haze': 'images/mist.png'
             }
-            image.src = weather[json.weather[0].main] || 'images/default.png';
+        image.src = //`https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/${json.weather[0].icon}.png`; // icons
+            weather[json.weather[0].main] || 'images/default.png'; // png images
 
             temperature.innerHTML = `${parseInt(json.main.temp)}<span>°C</span>`;
             description.innerHTML = `${json.weather[0].description}`;
@@ -116,6 +120,40 @@ async function getByCity(city, APIKey){
             }
 
         })
+}
+
+function getByCityHourly(city, APIKey){
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${APIKey}`)
+    .then(response => response.json())
+    .then(json =>{
+        displayHourlyForecast(json)
+    })
+}
+
+function displayHourlyForecast(hourlyData) {
+    const hourlyForecastDiv = document.getElementById('hourly-forecast');
+
+    hourlyForecastDiv.innerHTML = '';
+
+    const next24Hours = hourlyData['list'].slice(0, 8); // Display the next 24 hours (3-hour intervals)
+
+    next24Hours.forEach(item => {
+        const dateTime = new Date(item.dt * 1000); // Convert timestamp to milliseconds
+        const hour = dateTime.getHours();
+        const temperature = Math.round(item.main.temp);
+        const iconCode = item.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+
+        const hourlyItemHtml = `
+            <div class="hourly-item">
+                <span>${hour}:00</span>
+                <img src="${iconUrl}" alt="Hourly Weather Icon">
+                <span>${temperature}°C</span>
+            </div>
+        `;
+
+        hourlyForecastDiv.innerHTML += hourlyItemHtml;
+    });
 }
 
 function eventManager(fn) {
